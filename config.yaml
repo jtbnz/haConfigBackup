@@ -1,0 +1,23 @@
+name: "HA YAML Config Backup"
+version: "1.0"
+slug: "yaml_backup"
+description: "Backup YAML files with timestamp"
+arch:
+  - armhf
+  - armv7
+  - aarch64
+  - amd64
+  - i386
+startup: "services"
+boot: "auto"
+options:
+  backup_folder: "/backup"
+  files_to_watch:
+    - "/config/configuration.yaml"
+    - "/config/automations.yaml"
+schema:
+  backup_folder: str
+  files_to_watch:
+    type: list
+    items:
+      type: str
