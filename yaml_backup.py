@@ -1,5 +1,6 @@
 import os
 import shutil
+import asyncio
 from datetime import datetime
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -16,7 +17,7 @@ class BackupHandler(FileSystemEventHandler):
         backup_file = os.path.join(self.backup_folder, f"{os.path.basename(event.src_path)}_{timestamp}")
         shutil.copy(event.src_path, backup_file)
 
-def start_watching(files_to_watch, backup_folder):
+async def start_watching(files_to_watch, backup_folder):
     event_handler = BackupHandler(backup_folder)
     observer = Observer()
     for file in files_to_watch:
@@ -24,7 +25,7 @@ def start_watching(files_to_watch, backup_folder):
     observer.start()
     try:
         while True:
-            time.sleep(1)
+            await asyncio.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
@@ -34,4 +35,4 @@ files_to_watch = ["/config/configuration.yaml", "/config/automations.yaml"]
 backup_folder = "/config/backup"
 
 # Start watching the files
-start_watching(files_to_watch, backup_folder)
+asyncio.run(start_watching(files_to_watch, backup_folder))
